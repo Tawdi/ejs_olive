@@ -52,7 +52,11 @@ app.get('/', (req, res) => {
         items: ['Item 1', 'Item 2', 'Item 3']
     });
 });
-
+app.get('/phase', (req, res) => {
+    res.render('phase', {
+        title: 'About Us'
+    });
+});
 // Start the server
 const port = process.env.PORT || 8000;
 app.listen(port, () => {
