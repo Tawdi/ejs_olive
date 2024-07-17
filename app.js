@@ -54,7 +54,17 @@ app.get('/', (req, res) => {
 });
 app.get('/phase', (req, res) => {
     res.render('phase', {
-        title: 'About Us'
+        title: 'phase'
+    });
+});
+app.get('/propos_nous', (req, res) => {
+    res.render('propos_nous', {
+        title: 'propos_nous'
+    });
+});
+app.get('/contactez_nous', (req, res) => {
+    res.render('contactez_nous', {
+        title: 'contactez_nous'
     });
 });
 // Start the server
