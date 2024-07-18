@@ -71,6 +71,11 @@ app.get('/propos_nous', (req, res) => {
         title: 'propos_nous'
     });
 });
+app.get('/sign_in', (req, res) => {
+    res.render('sign_in', {
+        title: 'sign in'
+    });
+});
 app.get('/contactez_nous', (req, res) => {
     res.render('contactez_nous', {
         title: 'contactez_nous'
