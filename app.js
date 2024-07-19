@@ -39,7 +39,7 @@ const express = require('express');
 const app = express();
 const expressLayouts = require('express-ejs-layouts');
 
-// Set the view engine to EJS
+// Set the view engine to EJS 
 app.set('view engine', 'ejs');
 app.use(expressLayouts);
 // Serve static files from the 'public' directory
