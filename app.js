@@ -39,7 +39,7 @@ const express = require('express');
 const app = express();
 const expressLayouts = require('express-ejs-layouts');
 
-// Set the view engine to EJS
+// view engine  EJS
 app.set('view engine', 'ejs');
 app.use(expressLayouts);
 // Serve static files from the 'public' directory
@@ -69,6 +69,16 @@ app.get('/phase/phase_01',(req,res)=>{
 app.get('/propos_nous', (req, res) => {
     res.render('propos_nous', {
         title: 'propos_nous'
+    });
+});
+app.get('/sign_in', (req, res) => {
+    res.render('sign_in', {
+        title: 'sign in'
+    });
+});
+app.get('/inscrire', (req, res) => {
+    res.render('inscrire', {
+        title: 's\'inscrire'
     });
 });
 app.get('/contactez_nous', (req, res) => {
