@@ -88,6 +88,11 @@ app.get('/contactez_nous', (req, res) => {
         title: 'contactez_nous'
     });
 });
+app.get('/agenda', (req, res) => {
+    res.render('partials/agenda', {
+        title: 'agenda'
+    });
+});
 // Start the server
 const port = process.env.PORT || 8000;
 app.listen(port, () => {
