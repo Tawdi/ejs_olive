@@ -253,6 +253,7 @@
 }
 
 
+
 /*** Products ***/
 .product {
     background: linear-gradient(rgba(136, 180, 78, .1), rgba(136, 180, 78, .1)), url(../img/product-bg.png) left bottom no-repeat;
@@ -264,7 +265,12 @@
     justify-content: center;
     margin-top: 30px;
 }
-
+.lignnn{
+    height: 2px;
+    width: 50px;
+    background-color: #252C30;
+    
+}
 .product-carousel .owl-nav .owl-prev,
 .product-carousel .owl-nav .owl-next {
     margin: 0 10px;
@@ -540,4 +546,21 @@
     margin-bottom: 10px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+  }
+  .nbr{
+    position: absolute;
+    top: 0;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-weight: 600;
+    font-size: large;
+    color: #EEEEEE;
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+    background-color: #88b44ecd;
+    
   }
