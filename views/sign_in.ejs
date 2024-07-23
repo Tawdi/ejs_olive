@@ -1,16 +1,16 @@
 <div class="text-center sinng">
 <main class=" form-signin">
-    <form>
+    <form action="/sign_in" method="post">
       <img class="mb-4" src="/img/logo.png" alt="" width="80" height="80">
       <h1 class="h3 mb-3 fw-normal">OlivePhases</h1>
       <hp class=" mb-3 fw-normal">Bienvenue</p>
   
       <div class="form-floating">
-        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+        <input type="email" class="form-control" name="email" id="floatingInput" placeholder="name@example.com">
         <label for="floatingInput">Email address</label>
       </div>
       <div class="form-floating">
-        <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+        <input type="password" class="form-control" name="password" id="floatingPassword" placeholder="Password">
         <label for="floatingPassword">Password</label>
       </div>
   

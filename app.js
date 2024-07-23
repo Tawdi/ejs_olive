@@ -36,8 +36,22 @@
 //     console.log('Server is running on port 3000');
 // });
 const express = require('express');
+const bodyParser = require('body-parser');
+const mysql = require('mysql2'); 
 const app = express();
 const expressLayouts = require('express-ejs-layouts');
+app.use(bodyParser.urlencoded({ extended: true }));
+
+const db = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'admin',
+    database: 'mydb'
+});
+db.connect((err) => {
+    if (err) throw err;
+    console.log('Connected to database');
+});
 
 // view engine  EJS
 app.set('view engine', 'ejs');
@@ -61,11 +75,16 @@ app.get('/phase', (req, res) => {
         
     });
 });
+app.get('/les_stades',(req,res)=>{
+    res.render('les_stades',{
+        title:'les_stades'
+    })
+
+})
 app.get('/phase/phase_01',(req,res)=>{
     res.render('phase',{
         title:'phase 01'
     })
-
 
 })
 app.get('/propos_nous', (req, res) => {
@@ -93,6 +112,16 @@ app.get('/agenda', (req, res) => {
         title: 'agenda'
     });
 });
+
+// :::::::::: post ::::::::::::::
+app.post('/inscrire', (req, res) => {
+    const { nom, email, password } = req.body;
+    const sql = 'INSERT INTO users (nom, email, password) VALUES (?, ?, ?)';
+    db.query(sql, [nom, email, password], (err, result) => {
+      if (err) throw err;
+    //   res.send('User registered ');
+    });
+  });
 // Start the server
 const port = process.env.PORT || 8000;
 app.listen(port, () => {
