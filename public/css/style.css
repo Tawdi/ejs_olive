@@ -404,11 +404,14 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: rgba(138, 180, 78, .3);
+    background: rgba(54, 90, 4, 0.735);
     opacity: 0;
     transition: .5s;
 }
-
+.store-overlay p {
+    color:#EEEEEE;
+    font-weight: 600;
+}
 .store-item:hover .store-overlay {
     opacity: 1;
 }
@@ -563,4 +566,23 @@
     width: 30px;
     background-color: #88b44ecd;
     
+  }
+  /* ************agenda************** */
+  .agd_ctn .agd_top{
+    margin: 5px ;    
+  }
+  .agd_top{
+    background-color: #88B44E;
+    color: #EEEEEE;
+    text-align: center;
+    border-left: transparent solid 2px;
+    padding: 20px 0px;
+    gap: 5px;
+  }
+  .agd_ctn{
+    background-color: #d6eabb;
+    height: 80px;
+  }
+  .agd_row{
+    margin-bottom: 10px;
   }
