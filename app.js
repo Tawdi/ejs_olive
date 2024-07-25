@@ -124,7 +124,7 @@ app.post('/inscrire', async (req, res) => {
 
         // Set default role to 'user'
         const userRole = 'user';
-
+ 
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -138,7 +138,7 @@ app.post('/inscrire', async (req, res) => {
 });
 
 
-  app.post('/log_in', (req, res) => {
+app.post('/log_in', (req, res) => {
     const { email, password } = req.body;
 
     // Query to find the user by email
@@ -153,10 +153,28 @@ app.post('/inscrire', async (req, res) => {
         const match = await bcrypt.compare(password, user.password);
         if (!match) return res.status(401).json({ error: 'Invalid email or password' });
 
-        // Successful login
-        res.status(200).json({ message: 'Login successful' });
+        // Successful login, create a session
+        req.session.user = {
+            id: user.id,
+            email: user.email,
+            role: user.role
+        };
+
+        // Check the user role and render the appropriate page
+        if (user.role === 'admin') {
+            res.render('admin_page', {
+                title: 'Admin Page',
+                user: user
+            });
+        } else {
+            res.render('accueil', {
+                title: 'Accueil Index',
+                user: user
+            });
+        }
     });
 });
+
 
 // Start the server
 const port = process.env.PORT || 8000;
