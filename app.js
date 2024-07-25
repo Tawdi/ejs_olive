@@ -1,58 +1,21 @@
-// const express = require('express');
-// const mysql = require('mysql');
-// const app = express();
-
-// // Set the view engine to EJS
-// app.set('view engine', 'ejs');
-
-// // Create a MySQL connection
-// const connection = mysql.createConnection({
-//     host: 'localhost',
-//     user: 'yourUsername',
-//     password: 'yourPassword',
-//     database: 'yourDatabase'
-// });
-
-// connection.connect((err) => {
-//     if (err) throw err;
-//     console.log('Connected to the MySQL database!');
-// });
-
-// app.get('/', (req, res) => {
-//     const query = 'SELECT * FROM yourTable';
-    
-//     connection.query(query, (err, results) => {
-//         if (err) throw err;
-        
-//         // Render the template and pass the data
-//         res.render('index', {
-//             title: 'My EJS Page with MySQL Data',
-//             data: results
-//         });
-//     });
-// });
-
-// app.listen(3000, () => {
-//     console.log('Server is running on port 3000');
-// });
 const express = require('express');
-const bodyParser = require('body-parser');
-const mysql = require('mysql2'); 
+const mysql = require('mysql2');
+const session = require('express-session'); 
+const bcrypt = require('bcrypt'); 
 const app = express();
 const expressLayouts = require('express-ejs-layouts');
-app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(express.json()); // For parsing application/json
+app.use(express.urlencoded({ extended: true }));
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: 'admin',
-    database: 'mydb'
+    database: 'olive'
 });
 db.connect((err) => {
     if (err) throw err;
     console.log('Connected to database');
 });
-
 // view engine  EJS
 app.set('view engine', 'ejs');
 app.use(expressLayouts);
@@ -62,9 +25,8 @@ app.use(express.static('public'));
 // Route for the homepage
 app.get('/', (req, res) => {
     res.render('index', {
-        title: 'My EJS Page',
-        name: 'Ahmed',
-        items: ['Item 1', 'Item 2', 'Item 3']
+        title: 'My EJS Page'
+       
     });
 });
 app.get('/phase', (req, res) => {
@@ -108,20 +70,94 @@ app.get('/contactez_nous', (req, res) => {
     });
 });
 app.get('/agenda', (req, res) => {
-    res.render('partials/agenda', {
-        title: 'agenda'
+    // Query months
+    db.query('SELECT * FROM months', (err, months) => {
+        if (err) throw err;
+        
+        // Query events
+        db.query('SELECT * FROM events', (err, events) => {
+            if (err) throw err;
+            
+            // Render EJS template with data
+            res.render('partials/agenda', {
+                title: 'Agenda',
+                months: months,
+                events: events
+            });
+        });
     });
 });
 
-// :::::::::: post ::::::::::::::
-app.post('/inscrire', (req, res) => {
-    const { nom, email, password } = req.body;
-    const sql = 'INSERT INTO users (nom, email, password) VALUES (?, ?, ?)';
-    db.query(sql, [nom, email, password], (err, result) => {
-      if (err) throw err;
-      res.send('User registered ');
+app.post('/events', (req, res) => {
+    const { stade, col, month } = req.body;
+    const sql = 'INSERT INTO agenda_events (stade, col, month) VALUES (?, ?, ?)';
+    db.query(sql, [stade, col, month], (err, results) => {
+        if (err) throw err;
+        res.status(201).json({ id: results.insertId });
     });
-  });
+});
+
+
+// :::::::::: post ::::::::::::::
+// app.post('/inscrire', async (req, res) => {
+//     const { nom, email, password } = req.body; 
+//     const userRole = 'user';
+//     const hashedPassword = await bcrypt.hash(password, 10);
+//     const sql = 'INSERT INTO users (nom, email, password, role) VALUES (?, ?, ?, ?)';
+//     db.query(sql, [nom, email, hashedPassword, userRole], (err, result) => {
+//         if (err) return res.status(500).json({ error: 'Database error' });
+//         res.status(201).json({ message: 'User registered' });
+//     });
+// });
+app.post('/inscrire', async (req, res) => {
+    const { nom, email, password } = req.body;
+
+    // Check if the email already exists
+    const checkEmailSql = 'SELECT * FROM users WHERE email = ?';
+    db.query(checkEmailSql, [email], async (err, results) => {
+        if (err) return res.status(500).json({ error: 'Database error' });
+        
+        if (results.length > 0) {
+            // Email already exists
+            return res.status(400).json({ error: 'Email already in use' });
+        }
+
+        // Set default role to 'user'
+        const userRole = 'user';
+
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Insert user into the database
+        const sql = 'INSERT INTO users (nom, email, password, role) VALUES (?, ?, ?, ?)';
+        db.query(sql, [nom, email, hashedPassword, userRole], (err, result) => {
+            if (err) return res.status(500).json({ error: 'Database error' });
+            res.status(201).json({ message: 'User registered' });
+        });
+    });
+});
+
+
+  app.post('/log_in', (req, res) => {
+    const { email, password } = req.body;
+
+    // Query to find the user by email
+    const sql = 'SELECT * FROM users WHERE email = ?';
+    db.query(sql, [email], async (err, results) => {
+        if (err) return res.status(500).json({ error: 'Database error' });
+        if (results.length === 0) return res.status(401).json({ error: 'Invalid email or password' });
+
+        const user = results[0];
+
+        // Compare the provided password with the hashed password in the database
+        const match = await bcrypt.compare(password, user.password);
+        if (!match) return res.status(401).json({ error: 'Invalid email or password' });
+
+        // Successful login
+        res.status(200).json({ message: 'Login successful' });
+    });
+});
+
 // Start the server
 const port = process.env.PORT || 8000;
 app.listen(port, () => {

@@ -200,7 +200,7 @@
 }
 
 .page-header {
-    background: linear-gradient(rgba(136, 180, 78, .7), rgba(136, 180, 78, .7)), url(../img/carousel-1.jpg) center center no-repeat;
+    background: linear-gradient(rgba(136, 180, 78, .7), rgba(136, 180, 78, .7)), url(../img/carousel-2.jpg) center center no-repeat;
     background-size: cover;
 }
 
@@ -602,34 +602,33 @@
 :root {
     --numDays: 5;
     --numHours: 8;
-    --timeHeight: 60px;
+    --timeHeight: 30px;
     --calBgColor: #a8fcb4;
     --eventBorderColor: #568c59;
-    --stade_color1: #ffd6d1;
+    --stade_color1: #f88677;
     --stade_color2: #fafaa3;
     --stade_color3: #c9f2ff;
     --stade_color4: #5ffda6;
     --stade_color5: #f592ef;
     --stade_color6: #38fa41;
     --stade_color7: #9e91fd;
-    --stade_color8: #f6c590;
+    --stade_color8: #fbd7b1;
   }
   
   .calendar {
     display: grid;
     gap: 10px;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: 80% 20%;
     margin: 0.5rem;
   }
   
-  .timeline {
-    display: grid;
-    grid-template-rows: repeat(var(--numHours), var(--timeHeight));
+  .text_agenda_zone{
+    visibility: hidden;
   }
   
-  .days {
+  .grid_columns {
     display: grid;
-    grid-column: 2;
+    /* grid-column: 2; */
     gap: 2px;
     grid-template-columns: repeat(12, 7.6%);
   }
@@ -675,6 +674,10 @@
   .date {
     height: 60px;
     display: flex;
+    border-radius: 5px;
+    background-color: #0a9f4d;
+    color: white;
+    margin-bottom: 5px;
     justify-content: center;
     align-items: center;
     gap: 1em;
@@ -686,7 +689,7 @@
     display: inline;
   }
   
-  .date-day {
+  .date-mois {
     display: inline;
     font-size: 1rem;
     font-weight: 100;
@@ -750,4 +753,6 @@
     grid-row-start: 8;
     grid-row-end:   9;
   }
- 
+ .event:hover{
+    transform: scaleY(0.5);
+ }
