@@ -119,7 +119,7 @@ app.post('/inscrire', (req, res) => {
     const sql = 'INSERT INTO users (nom, email, password) VALUES (?, ?, ?)';
     db.query(sql, [nom, email, password], (err, result) => {
       if (err) throw err;
-    //   res.send('User registered ');
+      res.send('User registered ');
     });
   });
 // Start the server
