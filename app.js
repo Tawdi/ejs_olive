@@ -22,6 +22,14 @@ app.use(expressLayouts);
 // Serve static files from the 'public' directory
 app.use(express.static('public'));
 
+
+function isAuthenticated(req, res, next) {
+    if (req.session && req.session.user) {
+        return next();
+    } else {
+        res.redirect('/sign_in'); // Redirect to login page if not authenticated
+    }
+}
 // Route for the homepage
 app.get('/', (req, res) => {
     res.render('index', {
@@ -69,7 +77,7 @@ app.get('/contactez_nous', (req, res) => {
         title: 'contactez_nous'
     });
 });
-app.get('/agenda', (req, res) => {
+app.get('/agenda',isAuthenticated, (req, res) => {
     // Query months
     db.query('SELECT * FROM months', (err, months) => {
         if (err) throw err;
