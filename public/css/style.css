@@ -623,10 +623,9 @@
   }
   
   .calendar {
-    display: grid;
-    gap: 10px;
-    grid-template-columns: 80% 20%;
-    margin: 0.5rem;
+    display: flex;
+    
+    
   }
   
   .text_agenda_zone{
@@ -634,6 +633,7 @@
   }
   
   .grid_columns {
+    
     display: grid;
     /* grid-column: 2; */
     gap: 2px;

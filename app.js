@@ -621,10 +621,10 @@ app.listen(port, () => {
 
 const express = require('express');
 const session = require('express-session');
-const passport = require('passport');
+// const passport = require('passport');
 const mysql = require('mysql2');
 const expressLayouts = require('express-ejs-layouts');
-const passportConfig = require('./public/js/passport-config'); // Import your passport configuration
+// const passportConfig = require('./public/js/passport-config'); // Import your passport configuration
 
 const app = express();
 
@@ -647,16 +647,16 @@ app.use(express.urlencoded({ extended: true }));
 
 // Session middleware with in-memory store
 app.use(session({
-    secret: 'your-secret-key',
+    secret: 'secret-key',
     resave: false,
     saveUninitialized: false,
     cookie: { secure: false } // Set to true if using HTTPS
 }));
 
 // Initialize Passport and use session
-passportConfig(passport); // Initialize passport configuration
-app.use(passport.initialize());
-app.use(passport.session());
+// passportConfig(passport); // Initialize passport configuration
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 app.set('view engine', 'ejs');
 app.use(expressLayouts);
@@ -714,27 +714,43 @@ app.get('/agenda', isAuthenticated, (req, res) => {
         });
     });
 });
-
-app.post('/log_in', (req, res, next) => {
-    passport.authenticate('local', (err, user, info) => {
-        if (err) return next(err);
-        if (!user) {
-            return res.redirect(`/sign_in?error=${encodeURIComponent(info.message)}`);
-        }
-
+app.post('/log_in', (req, res) => {
+    const { email, password } = req.body; // Récupérer les données du formulaire
+  
+    // Correction de la requête SQL
+    const sql = 'SELECT role FROM users WHERE email = ? AND password = ?  ';
+  
+    db.query(sql, [email, password], (err, results) => {
+      if (err) {
+        console.error('Erreur lors de la requête de connexion :', err);
+        return res.status(500).send('Erreur lors de la connexion : ' + err.message);
+      }
+  
+  
+      if (results.length > 0) {
+        const  user = results[0];
+    
+        const role = results[0].role;
+  
+        // Vérifiez l'état de l'utilisateur
         req.session.user = {
             id: user.id,
             email: user.email,
             role: user.role
         };
-
-        if (user.role === 'admin') {
-            res.redirect('/');
+        // Si l'utilisateur est actif, procédez à la redirection en fonction du rôle
+        if (role === 'admin') {
+          return res.redirect('/agenda'); // Redirection vers agenda.ejs pour les admins
         } else {
-            res.redirect('/');
+          return res.redirect('/'); // Redirection vers accueil.ejs pour les utilisateurs normaux
         }
-    })(req, res, next);
+      } else {
+        // Aucun utilisateur trouvé avec les identifiants fournis
+        return res.send('Identifiants incorrects'); // Gérer le cas où aucun utilisateur correspondant n'est trouvé
+      }
+    });
 });
+
 
 app.post('/inscrire', async (req, res) => {
     const { nom, email, password } = req.body;

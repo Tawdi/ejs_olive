@@ -1,32 +1,29 @@
-ment.addEventListener('DOMContentLoaded', function() {
-    // Select all event elements
-    const events = document.querySelectorAll('.event');
+document.addEventListener('DOMContentLoaded', function () {
+    const eventElements = document.querySelectorAll('.event');
+    const textAgendaZone = document.querySelector('.text_agenda_zone');
+    const textZonee = document.querySelector('.text_zonee');
 
-    // Add click event listener to each event element
-    events.forEach(event => {
-        event.addEventListener('click', function() {
-            // Get the stade data attribute
-            const stade = this.getAttribute('data-stade');
+    // Define the text mapping for each stade
+    const stadeTextMapping = {
+        '1': 'Text for Stade 1',
+        '2': 'Text for Stade 2',
+        '3': 'Text for Stade 3',
+        // Add more mappings as needed
+    };
 
-            // Make AJAX request to get content
-            fetch(`/getContent?stade=${stade}`)
-                .then(response => response.json())
-                .then(data => {
-                    // Show the text_agenda_zone element
-                    const textAgendaZone = document.querySelector('.text_agenda_zone');
-                    textAgendaZone.style.display = 'block';
+    eventElements.forEach(eventElement => {
+        eventElement.addEventListener('mouseenter', function () {
+            const eventDiv = this.querySelector('.event');
+            if (eventDiv) {
+                const stade = eventDiv.getAttribute('data-stade');
+                const text = stadeTextMapping[stade] || 'Default text'; // Fallback text
+                textZonee.textContent = text;
+                textAgendaZone.style.display = 'block';
+            }
+        });
 
-                    // Update the content
-                    const hhhDiv = textAgendaZone.querySelector('.hhh');
-                    hhhDiv.innerHTML = `
-                        <h1>${data.title}</h1>
-                        <img src="${data.image_url}" alt="${data.title}" style="max-width: 100%; height: auto;">
-                        <p>${data.description}</p>
-                        <p>Start: ${data.debut}</p>
-                        <p>End: ${data.fin}</p>
-                    `;
-                })
-                .catch(error => console.error('Error fetching content:', error));
+        eventElement.addEventListener('mouseleave', function () {
+            textAgendaZone.style.display = 'none';
         });
     });
 });
